@@ -5,12 +5,14 @@ provider:
   stage: dev
   runtime: nodejs10
   region: us-central1
-  project: zoom-dropbox-sync
+  project: zoom-dropbox
+  labels:
+    application: zoom-dropbox
   # The GCF credentials can be a little tricky to set up. Luckily we've documented this for you here:
   # https://serverless.com/framework/docs/providers/google/guide/credentials/
   #
   # the path to the credentials file needs to be absolute
-  credentials: ~/.gcloud/keyfile.json
+  credentials: ~/.gcloud/zoom-dropbox-keyfile.json
 
 plugins:
   - serverless-google-cloudfunctions
@@ -24,10 +26,14 @@ package:
     - .git/**
 
 functions:
-  first:
-    handler: http
+  getZoomVideos:
+    handler: getZoomVideos
     events:
-      - http: path
+      - event:
+          eventType: providers/cloud.pubsub/eventTypes/topic.publish
+          resource: 'projects/${self:provider.project, ""}/topics/get-zoom-videos'
+    #events:
+    #  - http: path
   # NOTE: the following uses an "event" event (pubSub event in this case).
   # Please create the corresponding resources in the Google Cloud
   # before deploying this service through Serverless
