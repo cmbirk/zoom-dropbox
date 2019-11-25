@@ -1,13 +1,13 @@
-service: zoom-dropbox
+service: zoom-dropbox-backup
 
 provider:
   name: google
   stage: dev
   runtime: nodejs10
   region: us-central1
-  project: zoom-dropbox
+  project: zoom-dropbox-backup
   labels:
-    application: zoom-dropbox
+    application: zoom-dropbox-backup
   # The GCF credentials can be a little tricky to set up. Luckily we've documented this for you here:
   # https://serverless.com/framework/docs/providers/google/guide/credentials/
   #
@@ -32,6 +32,13 @@ functions:
       - event:
           eventType: providers/cloud.pubsub/eventTypes/topic.publish
           resource: 'projects/${self:provider.project, ""}/topics/get-zoom-videos'
+
+  saveToDropbox:
+    handler: saveToDropbox
+    events:
+      - event:
+          eventType: providers/cloud.pubsub/eventTypes/topic.publish
+          resource: 'projects/${self:provider.project, ""}/topics/get-zoom-videos-success'
     #events:
     #  - http: path
   # NOTE: the following uses an "event" event (pubSub event in this case).
