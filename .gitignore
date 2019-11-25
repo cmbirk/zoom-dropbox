@@ -4,6 +4,9 @@
 tmp
 .coveralls.yml
 
+# Terraform
+tooling/terraform/.terraform
+
 # Google
 keyfile.json
 
